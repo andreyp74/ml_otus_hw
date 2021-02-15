@@ -1,0 +1,20 @@
+{
+  "spark": {
+    "master": "local[*]",
+    "app_name": "Spark_streaming",
+    "batch_duration": 30
+  },
+  "kafka": {
+    "brokers": "localhost:9092",
+    "group_id": "spark_streaming_homework",
+    "consumer_topic": "newsfeed",
+    "producer_topic": "newsfeed",
+    "auto_offset_reset": "earliest"
+  },
+  "ml": {
+    "app_name": "Spark_model_training",
+    "dataset_path": "data/offline/train",
+    "model_location": "models",
+    "model_name": "linear-regression"
+  }
+}                              
