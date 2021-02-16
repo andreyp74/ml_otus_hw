@@ -26,14 +26,13 @@ def main():
         return 1
 
     producer = KafkaProducer(
-        bootstrap_servers=args.kafka_brokers,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        bootstrap_servers=args.kafka_brokers
     )
     
     try:
         df = pq.read_table(args.dataset_path).to_pandas()
         for index, row in df.iterrows():
-            data = json.loads(row.to_json()) #.encode('utf-8')
+            data = row.to_json().encode('utf-8')
             print(data)
             producer.send(args.kafka_topic, data)
             

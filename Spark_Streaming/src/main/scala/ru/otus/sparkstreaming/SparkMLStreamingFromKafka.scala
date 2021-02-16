@@ -2,7 +2,6 @@ package ru.otus.sparkstreaming
 
 import com.typesafe.config.{Config, ConfigFactory}
 
-import ru.otus.sparkstreaming.utils.ParseKafkaMessage
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
@@ -11,9 +10,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
 import org.apache.spark.ml.regression.LinearRegressionModel
-import org.apache.spark.ml.{Pipeline, PipelineModel}
 import org.apache.spark.ml.evaluation.RegressionEvaluator
-import org.apache.spark.ml.feature.{VectorAssembler, StringIndexer, VectorIndexer}
+import org.apache.spark.ml.feature.VectorAssembler
 
 
 object SparkMLStreamingFromKafka {
@@ -167,45 +165,12 @@ object SparkMLStreamingFromKafka {
 
     val df = dfFromJson.na.fill(0)
 
-    // val df = dfFilled
-    //             .withColumn("CreatedAt_Hour", from_unixtime(abs($"metadata_createdAt") / 1000, "HH").cast(IntegerType))
-    //             .withColumn("AuditedAt_Hour", from_unixtime(abs($"audit_timestamp") / 1000, "HH").cast(IntegerType))
-
-    // val objectTypeIndexer = new StringIndexer()
-    //     .setInputCol("instanceId_objectType")
-    //     .setOutputCol("objectTypeIndex")
-    //     .setHandleInvalid("keep")
-
-    // val clientTypeIndexer = new StringIndexer()
-    //     .setInputCol("audit_clientType")
-    //     .setOutputCol("clientTypeIndex")
-    //     .setHandleInvalid("keep")
-
-    // val ownerTypeIndexer = new StringIndexer()
-    //     .setInputCol("metadata_ownerType")
-    //     .setOutputCol("ownerTypeIndex")
-    //     .setHandleInvalid("keep")
-
-    // val platformIndexer = new StringIndexer()
-    //     .setInputCol("metadata_platform")
-    //     .setOutputCol("platformIndex")
-    //     .setHandleInvalid("keep")
-
-    // val statusIndexer = new StringIndexer()
-    //     .setInputCol("membership_status")
-    //     .setOutputCol("statusIndex")
-    //     .setHandleInvalid("keep")
-
-    // val indexer = new Pipeline().setStages(Array(objectTypeIndexer, clientTypeIndexer, ownerTypeIndexer, platformIndexer, statusIndexer))
-    // val dfIndexed = indexer.fit(df).transform(df)
-
-    val allColumns = df.columns.toSeq
+    //val allColumns = df.columns.toSeq
     val numericColumns = df.dtypes
         .filter(!_._2.equals("StringType"))
         .filter(!_._2.equals("ArrayType(StringType,true)"))
         .filter(!_._2.equals("DateType"))
         .map(d => d._1).toSeq
-    // val otherColumns = allColumns.filterNot(c => numericColumns.exists(_ == c))
     
     val assembler = new VectorAssembler()
         .setInputCols(numericColumns.toArray)

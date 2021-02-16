@@ -1,2 +1,1 @@
-#!/bin/bash
-python kafka_producer.py -d ../data/offline/test -t newsfeed -b localhost:9092
+python3 kafka_producer.py -d ../data/offline/test -t newsfeed -b localhost:9092
